@@ -26,8 +26,10 @@
 
 #include <Arduino.h>
 #include <vector>
+#include <string>
 
-extern "C" {
+extern "C"
+{
 #include "esp_partition.h"
 #include "esp_err.h"
 #include "nvs_flash.h"
@@ -39,55 +41,75 @@ extern "C" {
 #endif
 
 #if ARDUINONVS_SILENT
-  #define DEBUG_PRINT(...) { }
-  #define DEBUG_PRINTLN(...) { }
-  #define DEBUG_PRINTF(fmt, args...) { }
+#define DEBUG_PRINT(...) \
+  {                      \
+  }
+#define DEBUG_PRINTLN(...) \
+  {                        \
+  }
+#define DEBUG_PRINTF(fmt, args...) \
+  {                                \
+  }
 #else
-  #define DEBUG_PRINTER Serial
-  #define DEBUG_PRINT(...) { DEBUG_PRINTER.print(__VA_ARGS__); }
-  #define DEBUG_PRINTLN(...) { DEBUG_PRINTER.println(__VA_ARGS__); }
-  #define DEBUG_PRINTF(fmt, args...) { DEBUG_PRINTER.printf(fmt,## args); }
+#define DEBUG_PRINTER Serial
+#define DEBUG_PRINT(...)              \
+  {                                   \
+    DEBUG_PRINTER.print(__VA_ARGS__); \
+  }
+#define DEBUG_PRINTLN(...)              \
+  {                                     \
+    DEBUG_PRINTER.println(__VA_ARGS__); \
+  }
+#define DEBUG_PRINTF(fmt, args...)     \
+  {                                    \
+    DEBUG_PRINTER.printf(fmt, ##args); \
+  }
 #endif
 
-class ArduinoNvs {
+class ArduinoNvs
+{
 public:
   ArduinoNvs();
 
-  bool    begin(String namespaceNvs = "storage");
-  void    close();
+  bool begin(const char *namespaceNvs = "storage");
+  void close();
 
-  bool    eraseAll(bool forceCommit = true);
-  bool    erase(String key, bool forceCommit = true);
+  bool eraseAll(bool forceCommit = true);
+  bool erase(const char *key, bool forceCommit = true);
 
-  bool    setInt(String key, uint8_t value, bool forceCommit = true);
-  bool    setInt(String key, int16_t value, bool forceCommit = true);
-  bool    setInt(String key, uint16_t value, bool forceCommit = true);
-  bool    setInt(String key, int32_t value, bool forceCommit = true);
-  bool    setInt(String key, uint32_t value, bool forceCommit = true);
-  bool    setInt(String key, int64_t value, bool forceCommit = true);
-  bool    setInt(String key, uint64_t value, bool forceCommit = true);
-  bool    setFloat(String key, float value, bool forceCommit = true);
-  bool    setString(String key, String value, bool forceCommit = true);
-  bool    setBlob(String key, uint8_t* blob, size_t length, bool forceCommit = true);
-  bool    setBlob(String key, std::vector<uint8_t>& blob, bool forceCommit = true);
+  bool setInt(const char *key, uint8_t value, bool forceCommit = true);
+  bool setInt(const char *key, int16_t value, bool forceCommit = true);
+  bool setInt(const char *key, uint16_t value, bool forceCommit = true);
+  bool setInt(const char *key, int32_t value, bool forceCommit = true);
+  bool setInt(const char *key, uint32_t value, bool forceCommit = true);
+  bool setInt(const char *key, int64_t value, bool forceCommit = true);
+  bool setInt(const char *key, uint64_t value, bool forceCommit = true);
+  bool setFloat(const char *key, float value, bool forceCommit = true);
+  bool setString(const char *key, String value, bool forceCommit = true);
+  bool setString(const char *key, const char *value, bool forceCommit = true);
+  bool setString(const char *key, std::string value, bool forceCommit = true);
+  bool setBlob(const char *key, uint8_t *blob, size_t length, bool forceCommit = true);
+  bool setBlob(const char *key, std::vector<uint8_t> &blob, bool forceCommit = true);
 
-  int64_t getInt(String key, int64_t default_value = 0);  // In case of error, default_value will be returned
-  float   getFloat(String key, float default_value = 0);
-  
-  bool    getString(String key, String& res);
-  String  getString(String key);
+  int64_t getInt(const char *key, int64_t default_value = 0); // In case of error, default_value will be returned
+  float getFloat(const char *key, float default_value = 0);
 
-  size_t  getBlobSize(String key);  /// Returns the size of the stored blob
-  bool    getBlob(String key,  uint8_t* blob, size_t length);  /// User should proivde enought memory to store the loaded blob. If length < than required size to store blob, function fails.
-  bool    getBlob(String key, std::vector<uint8_t>& blob);  
-  std::vector<uint8_t> getBlob(String key); /// Less eficient but more simple in usage implemetation of `getBlob()`
+  bool getString(const char *key, String &res);
+  bool getString(const char *key, std::string &res);
+  String getString(const char *key);
+  std::string getstring(const char *key);
 
-  bool        commit();
+  size_t getBlobSize(const char *key);                         /// Returns the size of the stored blob
+  bool getBlob(const char *key, uint8_t *blob, size_t length); /// User should proivde enought memory to store the loaded blob. If length < than required size to store blob, function fails.
+  bool getBlob(const char *key, std::vector<uint8_t> &blob);
+  std::vector<uint8_t> getBlob(const char *key); /// Less eficient but more simple in usage implemetation of `getBlob()`
+
+  bool commit();
+
 protected:
-  nvs_handle  _nvs_handle;    
+  nvs_handle _nvs_handle;
 };
 
 extern ArduinoNvs NVS;
 
 #endif
-

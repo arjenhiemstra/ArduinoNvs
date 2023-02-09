@@ -14,7 +14,7 @@ NVS lib (commonly mentioned as *"flash lib"*) is a library used for storing data
 The ESP32 NVS stored data in the form of key-value. Keys are ASCII strings, up to 15 characters. Values can have one of the following types:
 
 - integer types: `uint8_t`, `int8_t`, `uint16_t`, `int16_t`, `uint32_t`, `int32_t`, `uint64_t`, `int64_t`
-- zero-terminated string
+- zero-terminated String (arduino) or std::string
 - variable length binary data (blob)
 
 Refer to the NVS ESP32 lib [original documentation](https://docs.espressif.com/projects/esp-idf/en/latest/api-reference/storage/nvs_flash.html#internals) for a details about internal NVS lib organization.
@@ -36,7 +36,7 @@ Then init the NVS with the command: `NVS.begin();`
 bool ok; 
 ok = NVS.setInt ("myInt", 23); // Stores the integer value 23 into the key named "myInt" on the NVS
 
-String data1 = "Hello String";
+String data = "Hello String";
 ok = NVS.setString ("myString", data); // Store the data value into the key named "myString" on the NVS
 ```
 
@@ -73,7 +73,7 @@ Serial.printf ("mac:% 02X:% 02X:% 02X:% 02X:% 02X:% 02X \ n",
 
 ## Namespaces
 
-ArduinoNvs Library suports ESP32 [Namespaces](https://docs.espressif.com/projects/esp-idf/en/latest/api-reference/storage/nvs_flash.html#namespaces)
+ArduinoNvs Library supports ESP32 [Namespaces](https://docs.espressif.com/projects/esp-idf/en/latest/api-reference/storage/nvs_flash.html#namespaces)
 
 The default namespace is `"storage"`. To store data in the separate namaspace, use its name in the `begin()` parameter:
 
@@ -89,5 +89,6 @@ mynvs.setString ("myString", dataSt); // this string is stored in "customNs" nam
 ```
 
 ## Authors
-1. dRKr, Sinai RnD (<info@sinai.io>)
-2. (original version) TridentTD (https://github.com/TridentTD/)
+1. Arjen Hiemstra (added std::string support and removed unnecessary String() usage)
+2. dRKr, Sinai RnD (<info@sinai.io>) (https://github.com/rpolitex/ArduinoNvs)
+3. (original version) TridentTD (https://github.com/TridentTD/)
